@@ -14,7 +14,7 @@
       <div class="card-body">
         <div class="mb-2 flex items-center justify-between gap-3">
           <span class="text-sm text-base-content/60">本地订单会在打开页面时自动同步最新状态</span>
-          <AppButton size="sm" variant="ghost" :loading="syncingLocalOrders" @click="refreshLocalOrders">刷新状态</AppButton>
+          <AppButton size="sm" variant="outline" :loading="syncingLocalOrders" @click="refreshLocalOrders">刷新状态</AppButton>
         </div>
         <div v-if="!localOrders.length" class="flex flex-col items-center gap-2 py-8 text-base-content/40">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,10 +34,9 @@
               <div class="text-xs text-base-content/50 mt-0.5">{{ o.productName }}</div>
             </div>
             <div class="flex items-center gap-3 shrink-0 ml-4">
-              <span v-if="o.paymentStatus" class="text-xs px-2 py-0.5 rounded-full font-medium"
-                :class="o.deliveryStatus === 'DELIVERED' ? 'bg-green-100 text-green-700' : o.paymentStatus === 'PAID' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'">
-                {{ o.deliveryStatus === 'DELIVERED' ? '已发货' : o.paymentStatus === 'PAID' ? '已支付' : '待支付' }}
-              </span>
+              <StatusTag v-if="o.status" :type="getOrderStatusType(o.status)" variant="pill">
+                {{ getOrderStatusLabel(o.status) }}
+              </StatusTag>
               <div class="text-right">
                 <div class="text-sm font-bold text-primary">{{ formatCents(o.amount) }}</div>
                 <div class="text-xs text-base-content/40">{{ formatDate(o.createdAt) }}</div>
@@ -80,6 +79,8 @@ import { onQueryOrder } from "./queryOrder.telefunc";
 import { onSyncLocalOrders } from "./syncLocalOrders.telefunc";
 import { getLocalOrders, saveLocalOrders, type LocalOrder } from "../../lib/local-orders";
 import { formatCents } from "../../lib/utils/money";
+import StatusTag from "../../components/StatusTag.vue";
+import { getOrderStatusLabel, getOrderStatusType } from "../../lib/utils/order-status";
 
 const activeTab = ref<"local" | "query">("query");
 const orderNo = ref("");

@@ -74,13 +74,13 @@
 
       <div v-if="filteredProducts.length" class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <article v-for="product in filteredProducts" :key="product.id" class="card relative h-[386px] origin-top scale-[0.92] shadow-2xl overflow-hidden group rounded-[18px] bg-gray-900 hover:-translate-y-1 transition-all duration-300">
-          
+
           <!-- 1. 商品背景图片（全幅插画风格，悬停微动） -->
-          <div 
+          <div
             class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-105"
             :style="{ backgroundImage: `url(${product.coverImage || emptyCoverUrl})` }"
           ></div>
-          
+
           <!-- 2. 边框层（你的 border.png，铺满全层） -->
           <img class="pointer-events-none absolute inset-0 z-10 h-full w-full object-fill opacity-95" src="../../assets/border.png" alt="border" />
 
@@ -117,20 +117,32 @@
                 ➤
               </span>
             </a>
-            
-            <!-- 底部画师/版权说明文字 -->
+
+            <!-- 商品状态区域 -->
             <div class="mt-3 text-center">
-              <div
-                v-if="product.deliveryType === 'CARD_AUTO' && product.availableStock >= 0 && product.availableStock < 10"
-                class="absolute left-5 text-sm font-bold tracking-wide px-2 py-1 rounded-full shadow-lg border"
-                :class="product.availableStock === 0 ? 'bg-gray-800/90 text-gray-200 border-gray-600' : 'bg-amber-500/90 text-white border-amber-400 animate-pulse'"
-              >
-                {{ product.availableStock === 0 ? '已售罄' : `库存紧张(${product.availableStock})` }}
-              </div>
-              <div class="flex items-end gap-0.5 font-black text-red-500 absolute right-6" style="text-shadow: 2px 2px 0 #fff, -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff, -1.5px 1.5px 0 #fff, 1.5px 1.5px 0 #fff, 2px 2px 4px rgba(0,0,0,0.3);">
+                <div
+                    v-if="product.deliveryType === 'CARD_AUTO' && product.availableStock >= 0 && product.availableStock < 10"
+                    class="absolute left-5 text-sm font-bold tracking-wide px-2 py-1 rounded-full shadow-lg border"
+                    :class="product.availableStock === 0 ? 'bg-gray-800/90 text-gray-200 border-gray-600' : 'bg-amber-500/90 text-white border-amber-400'"
+                >
+                    {{ product.availableStock === 0 ? '已售罄' : `库存紧张(${product.availableStock})` }}
+                </div>
+                <div
+                    v-else-if="product.deliveryType === 'FIXED_CARD'"
+                    class="absolute left-5 text-sm font-bold tracking-wide px-2 py-1 rounded-full shadow-lg border bg-emerald-500/90 text-white border-emerald-400"
+                >
+                    有库存
+                </div>
+                <div
+                    v-else-if="product.deliveryType === 'MANUAL'"
+                    class="absolute left-5 text-sm font-bold tracking-wide px-2 py-1 rounded-full shadow-lg border bg-sky-500/90 text-white border-sky-400"
+                >
+                    人工发货
+                </div>
+                <div class="flex items-end gap-0.5 font-black text-red-500 absolute right-6" style="text-shadow: 2px 2px 0 #fff, -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff, -1.5px 1.5px 0 #fff, 1.5px 1.5px 0 #fff, 2px 2px 4px rgba(0,0,0,0.3);">
                 <span class="text-sm font-bold italic text-red-600 mb-1">¥</span>
                 <span class="text-3xl italic leading-none tracking-tighter">{{ formatCents(product.price) }}</span>
-              </div>
+                </div>
             </div>
           </div>
 

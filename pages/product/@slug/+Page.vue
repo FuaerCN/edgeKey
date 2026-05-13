@@ -25,9 +25,11 @@
             <div class="text-sm text-base-content/60">当前价格</div>
             <div class="text-3xl font-bold text-primary">{{ formatCents(product.price) }}</div>
           </div>
-          <div class="text-sm text-base-content/70">限购 {{ product.minBuy }} - {{ product.maxBuy }} 件</div>
-          <div class="text-sm text-base-content/70">发货方式：{{ getDeliveryTypeLabel(product.deliveryType) }}</div>
-
+          <dev class="flex">
+              <!-- <div class="text-sm text-base-content/70">限购 {{ product.minBuy }} - {{ product.maxBuy }} 件</div> -->
+              <div class="text-sm text-base-content/70">限购 {{ product.maxBuy }} 件，</div>
+              <div class="text-sm text-base-content/70">发货方式：{{ getDeliveryTypeLabel(product.deliveryType) }}</div>
+          </dev>
           <div class="divider my-0"></div>
 
           <label class="flex flex-col gap-1.5">
@@ -75,8 +77,8 @@
           <p v-if="product.deliveryType === 'CARD_AUTO' && product.availableStock >= 0 && product.availableStock < 10" class="text-sm" :class="product.availableStock === 0 ? 'text-error' : 'text-warning'">
             {{ product.availableStock === 0 ? '商品都卖光了，看看其他商品' : `库存紧张，仅剩 ${product.availableStock} 件` }}
           </p>
-          <p v-else-if="product.deliveryType === 'FIXED_CARD'" class="text-sm text-success">自动发货，无限库存。</p>
-          <p v-else-if="product.deliveryType === 'MANUAL'" class="text-sm text-info">手动发货商品，支付后等待管理员处理。</p>
+          <p v-else-if="product.deliveryType === 'FIXED_CARD'" class="text-sm text-success">自动发货，库存充足。</p>
+          <p v-else-if="product.deliveryType === 'MANUAL'" class="text-sm text-success">{{ product.manualDeliveryHint || '支付后，客服将尽快为您处理订单，请耐心等待。' }}</p>
 
           <AppButton variant="primary" :loading="submitting" :disabled="!paymentMethods.length || (product.deliveryType === 'CARD_AUTO' && product.availableStock === 0)" @click="handleCreateOrder">
             {{ product.deliveryType === 'CARD_AUTO' && product.availableStock === 0 ? '已售罄' : '提交订单' }}
@@ -124,7 +126,7 @@ const form = reactive({
 });
 
 function getDeliveryTypeLabel(type: string) {
-  return ({ CARD_AUTO: "自动发货卡密", FIXED_CARD: "固定内容自动发货", MANUAL: "手动发货" } as Record<string, string>)[type] || type;
+  return ({ CARD_AUTO: "自动发货", FIXED_CARD: "自动发货", MANUAL: "人工发货" } as Record<string, string>)[type] || type;
 }
 
 let mobile = false;
